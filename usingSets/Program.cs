@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace usingSets
 {
@@ -7,40 +8,40 @@ namespace usingSets
     {
         static void Main(string[] args)
         {
-            HashSet<int> A = new HashSet<int>();
-            HashSet<int> B = new HashSet<int>();
-            HashSet<int> C = new HashSet<int>();
-            HashSet<int> ALL = new HashSet<int>();
 
-            Console.WriteLine("Total students in course a: ");
-            int qtdA = int.Parse(Console.ReadLine());
-            for (int i = 0; i < qtdA; i++)
+            Console.Write("Enter file full path: ");
+            string path = Console.ReadLine();
+
+            Dictionary<string, int> votes = new Dictionary<string, int>();
+
+            try
             {
-                int stdA = int.Parse(Console.ReadLine());
-                A.Add(stdA);
+                using (StreamReader sr = File.OpenText(path))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        string[] line = sr.ReadLine().Split(",");
+                        if (!votes.ContainsKey(line[0]))
+                        {
+                            votes[line[0]] = int.Parse(line[1]);
+                        }
+                        else
+                        {
+                            votes[line[0]] += int.Parse(line[1]);
+                        }
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine(e.Message);
             }
 
-            Console.WriteLine("Total students in course b: ");
-            int qtdB = int.Parse(Console.ReadLine());
-            for (int i = 0; i < qtdB; i++)
+            Console.WriteLine("All votes:");
+            foreach (var cadidate in votes)
             {
-                int stdB = int.Parse(Console.ReadLine());
-                B.Add(stdB);
+                Console.WriteLine(cadidate.Key + ": " + cadidate.Value);
             }
-
-            Console.WriteLine("Total students in course c: ");
-            int qtdC = int.Parse(Console.ReadLine());
-            for (int i = 0; i < qtdC; i++)
-            {
-                int stdC = int.Parse(Console.ReadLine());
-                C.Add(stdC);
-            }
-
-            ALL.UnionWith(A);
-            ALL.UnionWith(B);
-            ALL.UnionWith(C);
-
-            Console.WriteLine("Total students: " + ALL.Count);
         }
     }
 }
